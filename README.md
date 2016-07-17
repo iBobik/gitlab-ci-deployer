@@ -25,8 +25,8 @@ deployer:
   - `unsafe_received_data`: Payload from webhook request. Can be planted by an attacker (if he steals your secret token).
   - `project`: [Project object](http://docs.gitlab.com/ce/api/projects.html#get-single-project) loaded from GitLab API.
   - `build`: [Build object](http://docs.gitlab.com/ce/api/builds.html#get-a-single-build) loaded from GitLab API.
-  - `slug_build_ref`: Slugified build[ref] (GIT branch)
-  - `slug_project_name`: Slugified project[name]
+  - `slug_build_ref`: Slugified `build[ref]` (GIT branch)
+  - `slug_project_name`: Slugified `project[name]`
 
 Example `secrets.env`:
 
