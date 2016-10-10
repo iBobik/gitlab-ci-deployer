@@ -8,6 +8,7 @@ import shutil
 from io import BytesIO
 import zipfile
 from slugify import slugify
+import re
 
 HOST_NAME = ''
 PORT_NUMBER = 8080
@@ -41,6 +42,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
 		if self.headers['X-Gitlab-Token'] in access_tokens:
 			return True
 
+	# Process successful build
 	def do_build_success(self, data, project, build):
 		# Prepare tmp dir
 		if os.path.exists(TMP_PATH):
@@ -89,6 +91,31 @@ class WebhookHandler(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.wfile.write(b"Artifact deployed")
 		print('Artifact deployed: ', target_dir)
+
+		# Write note to merge request
+		if os.environ.get('MERGE_REQUEST_NOTE') and os.environ.get('MERGE_REQUEST_NOTE_PREFIX'):
+			self.do_write_note(project, build, format_data)
+
+	# Add or update note to merge request
+	def do_write_note(self, project, build, format_data):
+		# Select MRs with the same branch
+		for mr in project.mergerequests.list(state='opened'):
+			if mr.source_branch != build.ref:
+				continue
+
+			# Find and replace note in current description or add it to the end
+			prefix = os.environ.get('MERGE_REQUEST_NOTE_PREFIX')
+			note = prefix + os.environ.get('MERGE_REQUEST_NOTE').format(**format_data)
+
+			desc_replaced = re.subn(r'^' + re.escape(prefix) + '.*\n?', note + '\n', mr.description, flags=re.MULTILINE)
+			if desc_replaced[1]: # Was something replaced
+				if mr.description != desc_replaced[0]: # Is different
+					mr.description = desc_replaced[0]
+					mr.save()
+			else: # Nothing replaced
+				mr.description += '\n\n' + note
+				mr.save()
+
 
 if __name__ == '__main__':
 	server_class = HTTPServer

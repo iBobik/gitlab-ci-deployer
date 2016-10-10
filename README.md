@@ -15,6 +15,8 @@ deployer:
   environment:
     VIRTUAL_HOST: ci-deployer.example.com  # for nginx-proxy
     TARGET_DIR: /sites/{slug_project_name}-{build[commit][short_id]}.ci.example.com
+    MERGE_REQUEST_NOTE_PREFIX: "Preview of this branch: "
+    MERGE_REQUEST_NOTE: http://{slug_project_name}-{build[commit][short_id]}.ci.example.com
   env_file: secrets.env
   volumes:
     - static_sites:/sites
@@ -35,9 +37,11 @@ GITLAB_API_TOKEN=your-account-api-key
 GITLAB_WEBHOOK_TOKENS=secret-very-long-random-generated-token,next-token,next-token
 ```
 
-- GITLAB_API_TOKEN can be generated at [Profile → Access tokens](https://gitlab.com/profile/personal_access_tokens) for an account with access to projects you want to deploy. You can use multiple tokens for multiple accounts.
+- `MERGE_REQUEST_NOTE` and `MERGE_REQUEST_NOTE_PREFIX` specifies note to be written on successful build to merge request's description. Useful e.g. to let developers know where to find last deployed artifacts. `MERGE_REQUEST_NOTE_PREFIX` is used to find existing note, so further builds will override note from previous build. `MERGE_REQUEST_NOTE_PREFIX` support same variables like `TARGET_DIR`.
 
-- GITLAB_WEBHOOK_TOKENS is "password" for your server. You should generate it randomly and use in Webhooks config of trusted projects.
+- `GITLAB_API_TOKEN` can be generated at [Profile → Access tokens](https://gitlab.com/profile/personal_access_tokens) for an account with access to projects you want to deploy. You can use multiple tokens for multiple accounts.
+
+- `GITLAB_WEBHOOK_TOKENS` is "password" for your server. You should generate it randomly and use in Webhooks config of trusted projects.
 
 # How to configure GitLab
 
