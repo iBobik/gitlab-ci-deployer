@@ -14,6 +14,7 @@ HOST_NAME = ''
 PORT_NUMBER = 8080
 GITLAB_SERVER = 'https://gitlab.com'
 TMP_PATH = '/tmp/deployer'
+DEBUG = True if os.environ.get('DEBUG') == '1' else False
 
 access_tokens = os.environ.get('GITLAB_WEBHOOK_TOKENS').split(',')
 gl = gitlab.Gitlab(GITLAB_SERVER, os.environ.get('GITLAB_API_TOKEN'))
@@ -23,6 +24,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
 		if self.path == '/deployer':
 
 			data_string = self.rfile.read(int(self.headers['Content-Length'])).decode('utf-8')
+			if DEBUG: print('Received: ', data_string)
 			data = json.loads(data_string)
 
 			if data['object_kind'] == 'build' and data['build_status'] == 'success':
