@@ -1,6 +1,6 @@
 This daemon listens for [GitLab Webhooks](http://docs.gitlab.com/ce/web_hooks/web_hooks.html) build events and downloads build artifacts to the specified directory.
 
-Why it is **secured than deploy by GitLab CI**? It is good to know that if you want to deploy by build script (`.gitlab-ci.yml`) this script needs to have access to your server (e.g. FTP password or SSH keys). If somebody with push permission change `.gitlab-ci.yml` to print this secret to build log he will be able to access your server and upload anything to any directory, even to the production (if you do Continuous Delivery).
+Why it is **more secure than deploy by GitLab CI**? It is good to know that if you want to deploy by build script (`.gitlab-ci.yml`) this script needs to have access to your server (e.g. FTP password or SSH keys). If somebody with push permission change `.gitlab-ci.yml` to print this secret to build log he will be able to access your server and upload anything to any directory, even to the production (if you do Continuous Delivery).
 
 # Usage
 
