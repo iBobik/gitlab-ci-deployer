@@ -14,12 +14,14 @@ deployer:
   restart: unless-stopped
   environment:
     VIRTUAL_HOST: ci-deployer.example.com  # for nginx-proxy
+    BUILD_NAME: deploy # Only job named "deploy" will be deployed
     TARGET_DIR: /sites/{slug_project_name}-{build[commit][sha]}.ci.example.com
   env_file: secrets.env
   volumes:
     - static_sites:/sites
 ```
 
+- `BUILD_NAME`: Deploy only job with this name.
 
 - `TARGET_DIR`: Specifies where artifacts should be extracted. You can use this wildcards:
 

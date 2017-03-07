@@ -14,6 +14,7 @@ HOST_NAME = ''
 PORT_NUMBER = 8080
 GITLAB_SERVER = 'https://gitlab.com'
 TMP_PATH = '/tmp/deployer'
+BUILD_NAME = os.environ.get('BUILD_NAME')
 DEBUG = True if os.environ.get('DEBUG') == '1' else False
 
 access_tokens = os.environ.get('GITLAB_WEBHOOK_TOKENS').split(',')
@@ -33,6 +34,10 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
 				if not self.check_access(project):
 					print('Not deployed because access token does not match.')
+					return
+
+				if not BUILD_NAME or build.name != BUILD_NAME:
+					print('Not deployed because build name does not match.')
 					return
 
 				self.do_build_success(data, project, build)
