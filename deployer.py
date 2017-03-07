@@ -102,6 +102,11 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
+	# Notice about removed feature
+	if os.environ.get('MERGE_REQUEST_NOTE'):
+		print('Feature to write note into merge request was removed, replacement is the new dynamic environments feature in GitLab, see README how to use it.')
+
+	# Start webserver
 	server_class = HTTPServer
 	httpd = server_class((HOST_NAME, PORT_NUMBER), WebhookHandler)
 	print("Server Starts - {}:{}".format(HOST_NAME, PORT_NUMBER))
