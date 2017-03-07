@@ -32,6 +32,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
 				build = project.builds.get(data['build_id'])
 
 				if not self.check_access(project):
+					print('Not deployed because access token does not match.')
 					return
 
 				self.do_build_success(data, project, build)
@@ -39,6 +40,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
 				self.send_response(200)
 				self.end_headers()
 				self.wfile.write(b"Not interested")
+				if DEBUG: print('Not deployed because it is not success build.')
 
 	def check_access(self, project):
 		if self.headers['X-Gitlab-Token'] in access_tokens:
