@@ -14,15 +14,14 @@ deployer:
   restart: unless-stopped
   environment:
     VIRTUAL_HOST: ci-deployer.example.com  # for nginx-proxy
-    TARGET_DIR: /sites/{slug_project_name}-{build[commit][short_id]}.ci.example.com
-    MERGE_REQUEST_NOTE_PREFIX: "Preview of this branch: "
-    MERGE_REQUEST_NOTE: http://{slug_project_name}-{build[commit][short_id]}.ci.example.com
+    TARGET_DIR: /sites/{slug_project_name}-{build[commit][sha]}.ci.example.com
   env_file: secrets.env
   volumes:
     - static_sites:/sites
 ```
 
-- `TARGET_DIR` variable specifies where artifacts should be extracted. You can use this wildcards:
+
+- `TARGET_DIR`: Specifies where artifacts should be extracted. You can use this wildcards:
 
   - `unsafe_received_data`: Payload from webhook request. Can be planted by an attacker (if he steals your secret token).
   - `project`: [Project object](http://docs.gitlab.com/ce/api/projects.html#get-single-project) loaded from GitLab API.
@@ -37,8 +36,6 @@ GITLAB_API_TOKEN=your-account-api-key
 GITLAB_WEBHOOK_TOKENS=secret-very-long-random-generated-token,next-token,next-token
 ```
 
-- `MERGE_REQUEST_NOTE` and `MERGE_REQUEST_NOTE_PREFIX` specifies note to be written on successful build to merge request's description. Useful e.g. to let developers know where to find last deployed artifacts. `MERGE_REQUEST_NOTE_PREFIX` is used to find existing note, so further builds will override note from previous build. `MERGE_REQUEST_NOTE_PREFIX` support same variables like `TARGET_DIR`.
-
 - `GITLAB_API_TOKEN` can be generated at [Profile → Access tokens](https://gitlab.com/profile/personal_access_tokens) for an account with access to projects you want to deploy. You can use multiple tokens for multiple accounts.
 
 - `GITLAB_WEBHOOK_TOKENS` is "password" for your server. You should generate it randomly and use in Webhooks config of trusted projects.
@@ -51,6 +48,21 @@ GitLab project → Settings → Webhooks:
 - Build events
 - Secret token
 - Enable SSL verification
+
+## Link to site in GitLab UI
+
+GitLab supports showing links to deployed site [on multiple places](https://docs.gitlab.com/ce/ci/environments.html#making-use-of-the-environment-url) in it's UI:
+
+![Link to environment in merge request in GitLab](https://docs.gitlab.com/ce/ci/img/environments_mr_review_app.png)
+
+You can configure it in `.gitlab-ci.yml` like this:
+
+```yaml
+deploy:
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: http://$CI_BUILD_REF_NAME-$CI_BUILD_REF.ci.example.com
+```
 
 # Security warning
 
