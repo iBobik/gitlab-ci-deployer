@@ -69,3 +69,19 @@ deploy:
 # Security warning
 
 The deployer's HTTP server does not support HTTPS, so **you should use proxy with HTTPS termination** (like [nginx-proxy](https://github.com/jwilder/nginx-proxy)). **It is critical for security of your server and GitLab account to keep this tokens secret.** If you do not use HTTPS, your secret tokens will not be encrypted on the network what means attacker will be able to upload anything to your server and control your GitLab account. Also you should use **trusted SSL certificate** on the proxy to be protected against MITM attack (they can steal your tokens).
+
+# How to test it locally
+
+For development purposes you can run deployer like this:
+
+```
+docker run --name deployer --rm -v $(pwd)/deployer.py:/deployer.py -e "GITLAB_API_TOKEN=xxxx" -e "GITLAB_WEBHOOK_TOKENS=xxx" -e "TARGET_DIR=/sites/{slug_build_ref}-{slug_project_name}-ci.example.com" -e "BUILD_NAME=deploy" -e "DEBUG=1" -p 8080:8080 bobik/gitlab-ci-deployer
+```
+
+Then you can edit script by an editor and to apply changes just ctlr+C, arrow up, enter.
+
+To mockup GitLab's webhook call use curl:
+
+```
+curl --request POST -H "X-Gitlab-Token: xxxx" --header "Content-Type: application/json" --data '{just paste here JSON payload your catched on a server (with DEBUG: 1)}' http://localhost:8080/deployer
+```
