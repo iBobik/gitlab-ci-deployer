@@ -30,7 +30,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
 			if data['object_kind'] == 'build' and data['build_status'] == 'success':
 				project = gl.projects.get(data['project_id'])
-				build = project.builds.get(data['build_id'])
+				build = project.jobs.get(data['build_id'])
 
 				if not self.check_access(project):
 					print('Not deployed because access token does not match.')
