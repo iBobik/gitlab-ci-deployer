@@ -42,9 +42,6 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
 				self.do_build_success(data, project, build)
 			else:
-				self.send_response(200)
-				self.end_headers()
-				self.wfile.write(b"Not interested")
 				if DEBUG: print('Not deployed because it is not success build.')
 
 	def check_access(self, project):
