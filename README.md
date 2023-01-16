@@ -1,4 +1,4 @@
-This daemon listens for [GitLab Webhooks](http://docs.gitlab.com/ce/web_hooks/web_hooks.html) build events and downloads build artifacts to the specified directory.
+This daemon listens for [GitLab Webhooks](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#webhooks) build events and downloads build artifacts to the specified directory.
 
 Why it is **more secure than deploy by GitLab CI**? It is good to know that if you want to deploy by build script (`.gitlab-ci.yml`) this script needs to have access to your server (e.g. FTP password or SSH keys). If somebody with push permission change `.gitlab-ci.yml` to print this secret to build log he will be able to access your server and upload anything to any directory, even to the production (if you do Continuous Delivery).
 
@@ -26,8 +26,8 @@ deployer:
 - `TARGET_DIR`: Specifies where artifacts should be extracted. You can use this wildcards:
 
   - `unsafe_received_data`: Payload from webhook request. Can be planted by an attacker (if he steals your secret token).
-  - `project`: [Project object](http://docs.gitlab.com/ce/api/projects.html#get-single-project) loaded from GitLab API.
-  - `build`: [Build object](http://docs.gitlab.com/ce/api/builds.html#get-a-single-build) loaded from GitLab API.
+  - `project`: [Project object](https://docs.gitlab.com/ee/api/projects.html#get-single-project) loaded from GitLab API.
+  - `build`: [Job object](https://docs.gitlab.com/ee/api/jobs.html#get-a-single-job) loaded from GitLab API.
   - `slug_build_ref`: Slugified `build[ref]` (GIT branch)
   - `slug_project_name`: Slugified `project[name]`
 
