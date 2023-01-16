@@ -53,7 +53,7 @@ GitLab project → Settings → Webhooks:
 
 ## Link to site in GitLab UI
 
-GitLab supports showing links to deployed site [on multiple places](https://docs.gitlab.com/ce/ci/environments.html#making-use-of-the-environment-url) in it's UI:
+GitLab supports showing links to deployed site [on multiple places](https://docs.gitlab.com/ee/ci/environments/#environment-url) in it's UI:
 
 ![Link to environment in merge request in GitLab](https://docs.gitlab.com/ce/ci/img/environments_mr_review_app.png)
 
